@@ -446,6 +446,7 @@
                             <div id="splitBetween" class="checkbox-list">
                                 <div style="color: #94a3b8; font-size: 0.875rem;">Add members first</div>
                             </div>
+                            <button type="button" class="btn" onclick="selectAllMembers()" style="margin-top: 0.5rem; background: #64748b; font-size: 0.875rem; padding: 0.5rem;">Select All</button>
                             <div id="splitError" class="error-message">Select at least one person</div>
                         </div>
                         <button class="btn" onclick="addExpense()">Record Expense</button>
@@ -578,6 +579,15 @@
                     <label for="split_${m}">${m}</label>
                 </div>
             `).join('');
+        }
+
+        function selectAllMembers() {
+            if (members.length === 0) return;
+            
+            members.forEach(m => {
+                const checkbox = document.getElementById(`split_${m}`);
+                if (checkbox) checkbox.checked = true;
+            });
         }
 
         function addExpense() {
