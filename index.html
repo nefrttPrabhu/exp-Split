@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Splitter - Share Costs Fairly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            padding: 0;
+            color: #2d3748;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 2rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .header-stats span {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .panel {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            padding: 1rem 1.25rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475569;
+        }
+
+        .panel-body {
+            padding: 1.25rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #475569;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.625rem 0.875rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.625rem 1rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .member-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .member-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.375rem 0.75rem;
+            background: #eff6ff;
+            color: #1e40af;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .checkbox-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.625rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: #f8fafc;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.625rem;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+            font-size: 0.9375rem;
+        }
+
+        .expense-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .expense-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .expense-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .expense-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1e293b;
+        }
+
+        .expense-amount {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: #2563eb;
+        }
+
+        .expense-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .expense-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .split-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.375rem;
+            margin-top: 0.5rem;
+        }
+
+        .split-tag {
+            padding: 0.25rem 0.625rem;
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 4px;
+            font-size: 0.8125rem;
+        }
+
+        .balance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .balance-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .balance-name {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .balance-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .balance-value.positive {
+            color: #059669;
+        }
+
+        .balance-value.negative {
+            color: #dc2626;
+        }
+
+        .balance-value.zero {
+            color: #64748b;
+        }
+
+        .settlement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .settlement-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+        }
+
+        .settlement-text {
+            flex: 1;
+            font-size: 0.9375rem;
+            color: #166534;
+        }
+
+        .settlement-text strong {
+            color: #14532d;
+            font-weight: 600;
+        }
+
+        .settlement-arrow {
+            margin: 0 0.75rem;
+            color: #16a34a;
+            font-size: 1.25rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #94a3b8;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .error-message {
+            color: #dc2626;
+            font-size: 0.8125rem;
+            margin-top: 0.375rem;
+            display: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #059669;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: none;
+            min-width: 300px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification-text {
+            color: #166534;
+            font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .header-stats {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">Expense Splitter</div>
+            <div class="header-stats">
+                <div>Members: <span id="memberCount">0</span></div>
+                <div>Expenses: <span id="expenseCount">0</span></div>
+                <div>Total: <span id="totalAmount">$0.00</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-layout">
+            <div class="sidebar">
+                <div class="panel">
+                    <div class="panel-header">Add Member</div>
+                    <div class="panel-body">
+                        <div class="input-group">
+                            <label for="memberName">Name</label>
+                            <input type="text" id="memberName" placeholder="Enter name">
+                            <div id="memberError" class="error-message">Please enter a valid name</div>
+                        </div>
+                        <button class="btn" onclick="addMember()">Add to Group</button>
+                        
+                        <div style="margin-top: 1.25rem;">
+                            <div style="font-size: 0.8125rem; color: #64748b; margin-bottom: 0.75rem; font-weight: 500;">GROUP MEMBERS</div>
+                            <div id="membersList" class="member-list">
+                                <div style="color: #94a3b8; font-size: 0.875rem;">No members yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">Add Expense</div>
+                    <div class="panel-body">
+                        <div class="input-group">
+                            <label for="expenseDescription">Description</label>
+                            <input type="text" id="expenseDescription" placeholder="e.g., Groceries">
+                            <div id="descError" class="error-message">Required field</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="expenseAmount">Amount</label>
+                            <input type="number" id="expenseAmount" placeholder="0.00" step="0.01" min="0">
+                            <div id="amountError" class="error-message">Enter valid amount</div>
+                        </div>
+                        <div class="input-group">
+                            <label for="expensePaidBy">Paid By</label>
+                            <select id="expensePaidBy">
+                                <option value="">Select member</option>
+                            </select>
+                            <div id="paidByError" class="error-message">Select who paid</div>
+                        </div>
+                        <div class="input-group">
+                            <label>Split Between</label>
+                            <div id="splitBetween" class="checkbox-list">
+                                <div style="color: #94a3b8; font-size: 0.875rem;">Add members first</div>
+                            </div>
+                            <div id="splitError" class="error-message">Select at least one person</div>
+                        </div>
+                        <button class="btn" onclick="addExpense()">Record Expense</button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="panel" style="margin-bottom: 2rem;">
+                    <div class="panel-header">Recent Expenses</div>
+                    <div class="panel-body">
+                        <div id="expensesList">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📝</div>
+                                <div>No expenses recorded yet</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="panel">
+                        <div class="panel-header">Balances</div>
+                        <div class="panel-body">
+                            <div id="balanceSummary">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">💰</div>
+                                    <div>Add expenses to see balances</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">Settlements</div>
+                        <div class="panel-body">
+                            <div id="settlementSuggestions">
+                                <div class="empty-state">
+                                    <div class="empty-state-icon">✓</div>
+                                    <div>Settlement plan will appear here</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        <div class="notification-text"></div>
+    </div>
+
+    <script>
+        let members = [];
+        let expenses = [];
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.querySelector('.notification-text').textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2500);
+        }
+
+        function updateHeaderStats() {
+            document.getElementById('memberCount').textContent = members.length;
+            document.getElementById('expenseCount').textContent = expenses.length;
+            const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function addMember() {
+            const input = document.getElementById('memberName');
+            const name = input.value.trim();
+            const error = document.getElementById('memberError');
+
+            if (name === '') {
+                error.style.display = 'block';
+                return;
+            }
+
+            if (members.includes(name)) {
+                error.textContent = 'Member already exists';
+                error.style.display = 'block';
+                return;
+            }
+
+            members.push(name);
+            error.style.display = 'none';
+            input.value = '';
+
+            showNotification(`${name} added to group`);
+            updateMembersList();
+            updateExpenseForm();
+            updateHeaderStats();
+            recalculate();
+        }
+
+        function updateMembersList() {
+            const container = document.getElementById('membersList');
+            
+            if (members.length === 0) {
+                container.innerHTML = '<div style="color: #94a3b8; font-size: 0.875rem;">No members yet</div>';
+                return;
+            }
+
+            container.innerHTML = members.map(m => 
+                `<span class="member-chip">${m}</span>`
+            ).join('');
+        }
+
+        function updateExpenseForm() {
+            const select = document.getElementById('expensePaidBy');
+            const checkboxContainer = document.getElementById('splitBetween');
+
+            if (members.length === 0) {
+                select.innerHTML = '<option value="">Select member</option>';
+                checkboxContainer.innerHTML = '<div style="color: #94a3b8; font-size: 0.875rem;">Add members first</div>';
+                return;
+            }
+
+            select.innerHTML = '<option value="">Select member</option>' +
+                members.map(m => `<option value="${m}">${m}</option>`).join('');
+
+            checkboxContainer.innerHTML = members.map(m => `
+                <div class="checkbox-item">
+                    <input type="checkbox" id="split_${m}" value="${m}">
+                    <label for="split_${m}">${m}</label>
+                </div>
+            `).join('');
+        }
+
+        function addExpense() {
+            const desc = document.getElementById('expenseDescription').value.trim();
+            const amount = parseFloat(document.getElementById('expenseAmount').value);
+            const paidBy = document.getElementById('expensePaidBy').value;
+            
+            const splitMembers = members.filter(m => 
+                document.getElementById(`split_${m}`).checked
+            );
+
+            let valid = true;
+
+            if (desc === '') {
+                document.getElementById('descError').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('descError').style.display = 'none';
+            }
+
+            if (isNaN(amount) || amount <= 0) {
+                document.getElementById('amountError').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('amountError').style.display = 'none';
+            }
+
+            if (paidBy === '') {
+                document.getElementById('paidByError').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('paidByError').style.display = 'none';
+            }
+
+            if (splitMembers.length === 0) {
+                document.getElementById('splitError').style.display = 'block';
+                valid = false;
+            } else {
+                document.getElementById('splitError').style.display = 'none';
+            }
+
+            if (!valid) return;
+
+            expenses.push({
+                id: Date.now(),
+                description: desc,
+                amount: amount,
+                paidBy: paidBy,
+                splitBetween: splitMembers,
+                date: new Date().toLocaleDateString()
+            });
+
+            document.getElementById('expenseDescription').value = '';
+            document.getElementById('expenseAmount').value = '';
+            document.getElementById('expensePaidBy').value = '';
+            splitMembers.forEach(m => {
+                document.getElementById(`split_${m}`).checked = false;
+            });
+
+            showNotification(`Expense recorded: ${desc}`);
+            updateExpensesList();
+            updateHeaderStats();
+            recalculate();
+        }
+
+        function updateExpensesList() {
+            const container = document.getElementById('expensesList');
+
+            if (expenses.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <div>No expenses recorded yet</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = expenses.slice().reverse().map(exp => {
+                const perPerson = exp.amount / exp.splitBetween.length;
+                return `
+                    <div class="expense-card">
+                        <div class="expense-header">
+                            <div class="expense-title">${exp.description}</div>
+                            <div class="expense-amount">$${exp.amount.toFixed(2)}</div>
+                        </div>
+                        <div class="expense-meta">
+                            <div class="expense-meta-item">Paid by ${exp.paidBy}</div>
+                            <div class="expense-meta-item">${exp.date}</div>
+                            <div class="expense-meta-item">$${perPerson.toFixed(2)} each</div>
+                        </div>
+                        <div class="split-tags">
+                            ${exp.splitBetween.map(m => `<span class="split-tag">${m}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function recalculate() {
+            if (members.length === 0 || expenses.length === 0) {
+                document.getElementById('balanceSummary').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💰</div>
+                        <div>Add expenses to see balances</div>
+                    </div>
+                `;
+                document.getElementById('settlementSuggestions').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">✓</div>
+                        <div>Settlement plan will appear here</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const balances = {};
+            members.forEach(m => balances[m] = 0);
+
+            expenses.forEach(exp => {
+                const share = exp.amount / exp.splitBetween.length;
+                balances[exp.paidBy] += exp.amount;
+                exp.splitBetween.forEach(m => {
+                    balances[m] -= share;
+                });
+            });
+
+            displayBalances(balances);
+            displaySettlements(balances);
+        }
+
+        function displayBalances(balances) {
+            const container = document.getElementById('balanceSummary');
+            
+            const html = Object.entries(balances)
+                .sort((a, b) => b[1] - a[1])
+                .map(([name, bal]) => {
+                    let className = 'zero';
+                    let prefix = '';
+                    
+                    if (bal > 0.01) {
+                        className = 'positive';
+                        prefix = '+';
+                    } else if (bal < -0.01) {
+                        className = 'negative';
+                    } else {
+                        bal = 0;
+                    }
+
+                    return `
+                        <div class="balance-card">
+                            <div class="balance-name">${name}</div>
+                            <div class="balance-value ${className}">${prefix}$${Math.abs(bal).toFixed(2)}</div>
+                        </div>
+                    `;
+                }).join('');
+
+            container.innerHTML = `<div class="balance-grid">${html}</div>`;
+        }
+
+        function displaySettlements(balances) {
+            const container = document.getElementById('settlementSuggestions');
+            
+            const creditors = [];
+            const debtors = [];
+
+            Object.entries(balances).forEach(([name, bal]) => {
+                if (bal > 0.01) {
+                    creditors.push({ name, amount: bal });
+                } else if (bal < -0.01) {
+                    debtors.push({ name, amount: Math.abs(bal) });
+                }
+            });
+
+            if (creditors.length === 0 && debtors.length === 0) {
+                container.innerHTML = `
+                    <div class="settlement-item" style="justify-content: center;">
+                        <div class="settlement-text" style="text-align: center;">
+                            <strong>All settled!</strong> Everyone is even.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const settlements = [];
+            let i = 0, j = 0;
+
+            while (i < debtors.length && j < creditors.length) {
+                const debtor = debtors[i];
+                const creditor = creditors[j];
+                
+                const amount = Math.min(debtor.amount, creditor.amount);
+                
+                settlements.push({
+                    from: debtor.name,
+                    to: creditor.name,
+                    amount: amount
+                });
+
+                debtor.amount -= amount;
+                creditor.amount -= amount;
+
+                if (debtor.amount < 0.01) i++;
+                if (creditor.amount < 0.01) j++;
+            }
+
+            container.innerHTML = `
+                <div class="settlement-list">
+                    ${settlements.map(s => `
+                        <div class="settlement-item">
+                            <div class="settlement-text">
+                                <strong>${s.from}</strong> pays <strong>${s.to}</strong>
+                            </div>
+                            <div class="settlement-arrow">→</div>
+                            <div style="font-weight: 700; color: #166534;">$${s.amount.toFixed(2)}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        document.getElementById('memberName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addMember();
+        });
+
+        updateHeaderStats();
+    </script>
+</body>
+</html>
