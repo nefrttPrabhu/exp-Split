@@ -1,5 +1,3 @@
-Of course. Here is a README file formatted in Markdown, ready for you to upload to your GitHub repository for the Expense Splitter Service project.
-
 -----
 
 # Expense Splitter Service
