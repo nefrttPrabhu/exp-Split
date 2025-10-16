@@ -394,7 +394,7 @@
             <div class="header-stats">
                 <div>Members: <span id="memberCount">0</span></div>
                 <div>Expenses: <span id="expenseCount">0</span></div>
-                <div>Total: <span id="totalAmount">$0.00</span></div>
+                <div>Total: <span id="totalAmount">₹0.00</span></div>
             </div>
         </div>
     </div>
@@ -517,7 +517,7 @@
             document.getElementById('memberCount').textContent = members.length;
             document.getElementById('expenseCount').textContent = expenses.length;
             const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `₹${total.toFixed(2)}`;
         }
 
         function addMember() {
@@ -679,12 +679,12 @@
                     <div class="expense-card">
                         <div class="expense-header">
                             <div class="expense-title">${exp.description}</div>
-                            <div class="expense-amount">$${exp.amount.toFixed(2)}</div>
+                            <div class="expense-amount">₹${exp.amount.toFixed(2)}</div>
                         </div>
                         <div class="expense-meta">
                             <div class="expense-meta-item">Paid by ${exp.paidBy}</div>
                             <div class="expense-meta-item">${exp.date}</div>
-                            <div class="expense-meta-item">$${perPerson.toFixed(2)} each</div>
+                            <div class="expense-meta-item">₹${perPerson.toFixed(2)} each</div>
                         </div>
                         <div class="split-tags">
                             ${exp.splitBetween.map(m => `<span class="split-tag">${m}</span>`).join('')}
@@ -747,7 +747,7 @@
                     return `
                         <div class="balance-card">
                             <div class="balance-name">${name}</div>
-                            <div class="balance-value ${className}">${prefix}$${Math.abs(bal).toFixed(2)}</div>
+                            <div class="balance-value ${className}">${prefix}₹${Math.abs(bal).toFixed(2)}</div>
                         </div>
                     `;
                 }).join('');
@@ -810,7 +810,7 @@
                                 <strong>${s.from}</strong> pays <strong>${s.to}</strong>
                             </div>
                             <div class="settlement-arrow">→</div>
-                            <div style="font-weight: 700; color: #166534;">$${s.amount.toFixed(2)}</div>
+                            <div style="font-weight: 700; color: #166534;">₹${s.amount.toFixed(2)}</div>
                         </div>
                     `).join('')}
                 </div>
