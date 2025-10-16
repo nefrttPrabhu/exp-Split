@@ -394,7 +394,7 @@
             <div class="header-stats">
                 <div>Members: <span id="memberCount">0</span></div>
                 <div>Expenses: <span id="expenseCount">0</span></div>
-                <div>Total: <span id="totalAmount">₹0.00</span></div>
+                <div>Total: <span id="totalAmount">$0.00</span></div>
             </div>
         </div>
     </div>
@@ -430,7 +430,7 @@
                             <div id="descError" class="error-message">Required field</div>
                         </div>
                         <div class="input-group">
-                            <label for="expenseAmount">Amount (₹)</label>
+                            <label for="expenseAmount">Amount</label>
                             <input type="number" id="expenseAmount" placeholder="0.00" step="0.01" min="0">
                             <div id="amountError" class="error-message">Enter valid amount</div>
                         </div>
@@ -517,7 +517,7 @@
             document.getElementById('memberCount').textContent = members.length;
             document.getElementById('expenseCount').textContent = expenses.length;
             const total = expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            document.getElementById('totalAmount').textContent = `₹${total.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `$${total.toFixed(2)}`;
         }
 
         function addMember() {
@@ -584,9 +584,16 @@
         function selectAllMembers() {
             if (members.length === 0) return;
             
+            // Check if all are already selected
+            const allSelected = members.every(m => {
+                const checkbox = document.getElementById(`split_${m}`);
+                return checkbox && checkbox.checked;
+            });
+            
+            // Toggle: if all selected, deselect all; otherwise select all
             members.forEach(m => {
                 const checkbox = document.getElementById(`split_${m}`);
-                if (checkbox) checkbox.checked = true;
+                if (checkbox) checkbox.checked = !allSelected;
             });
         }
 
@@ -672,12 +679,12 @@
                     <div class="expense-card">
                         <div class="expense-header">
                             <div class="expense-title">${exp.description}</div>
-                            <div class="expense-amount">₹${exp.amount.toFixed(2)}</div>
+                            <div class="expense-amount">$${exp.amount.toFixed(2)}</div>
                         </div>
                         <div class="expense-meta">
                             <div class="expense-meta-item">Paid by ${exp.paidBy}</div>
                             <div class="expense-meta-item">${exp.date}</div>
-                            <div class="expense-meta-item">₹${perPerson.toFixed(2)} each</div>
+                            <div class="expense-meta-item">$${perPerson.toFixed(2)} each</div>
                         </div>
                         <div class="split-tags">
                             ${exp.splitBetween.map(m => `<span class="split-tag">${m}</span>`).join('')}
@@ -740,7 +747,7 @@
                     return `
                         <div class="balance-card">
                             <div class="balance-name">${name}</div>
-                            <div class="balance-value ${className}">${prefix}₹${Math.abs(bal).toFixed(2)}</div>
+                            <div class="balance-value ${className}">${prefix}$${Math.abs(bal).toFixed(2)}</div>
                         </div>
                     `;
                 }).join('');
@@ -803,7 +810,7 @@
                                 <strong>${s.from}</strong> pays <strong>${s.to}</strong>
                             </div>
                             <div class="settlement-arrow">→</div>
-                            <div style="font-weight: 700; color: #166534;">₹${s.amount.toFixed(2)}</div>
+                            <div style="font-weight: 700; color: #166534;">$${s.amount.toFixed(2)}</div>
                         </div>
                     `).join('')}
                 </div>
